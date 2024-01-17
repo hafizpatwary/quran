@@ -74,12 +74,12 @@
         var imgElement2 = document.createElement("img");
 
         // Set the source for the images
-        imgElement1.src = imageUrls[currentImagePairIndex][0];
-        imgElement2.src = imageUrls[currentImagePairIndex][1];
+        imgElement1.src = imageUrls[currentImagePairIndex][1]; // Switched order
+        imgElement2.src = imageUrls[currentImagePairIndex][0];
 
         // Append images to the container
-        imagePairContainer.appendChild(imgElement2); // Switched order
         imagePairContainer.appendChild(imgElement1);
+        imagePairContainer.appendChild(imgElement2);
 
         // Append the image pair container to the image container
         imageContainer.appendChild(imagePairContainer);
@@ -114,6 +114,11 @@
         pageInput.min = 1;
         pageInput.max = 604;
         pageInput.placeholder = "Page";
+        pageInput.addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            goButton.click();
+          }
+        });
         slideshowContainer.appendChild(pageInput);
 
         // Create "Go" button to navigate to the specified page
@@ -156,8 +161,8 @@
           ".image-pair img:nth-child(2)"
         );
 
-        imgElement1.src = imageUrls[currentImagePairIndex][0];
-        imgElement2.src = imageUrls[currentImagePairIndex][1];
+        imgElement1.src = imageUrls[currentImagePairIndex][1]; // Switched order
+        imgElement2.src = imageUrls[currentImagePairIndex][0];
       }
 
       // Call the function to create the slideshow when the page loads
