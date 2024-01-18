@@ -11,7 +11,7 @@
     <style>
       html,
       body {
-        height: calc(100% - 200px); /* Subtract the total padding from 100% */
+        height: calc(100% - 10px); /* Subtract the total padding from 100% */
         width: 100%;
         margin: 0;
         padding: 0px 10px; /* Add 10px of padding to the top and bottom */
@@ -32,6 +32,15 @@
       }
       p {
         font-family: "Lato", sans-serif;
+        color: #808080; /* Grey color */
+      }
+
+      p:hover {
+        color: #404040; /* Darker grey color on hover */
+      }
+
+      .slider:hover ~ p {
+        color: #404040; /* Darker grey color on hover */
       }
       img {
         max-width: 35vw; /* Set the maximum width of each image to 45% of the viewport width */
@@ -94,12 +103,20 @@
         height: 25px; /* Slider handle height */
         background: #4caf50; /* Green background */
         cursor: pointer; /* Cursor on hover */
+        position: relative;
       }
-      .slider::-moz-range-thumb {
-        width: 25px; /* Set a specific slider handle width */
-        height: 25px; /* Slider handle height */
-        background: #4caf50; /* Green background */
-        cursor: pointer; /* Cursor on hover */
+
+      .slider::-webkit-slider-thumb::before {
+        content: attr(data-value);
+        position: absolute;
+        top: -26px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #4caf50;
+        color: white;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-size: 12px;
       }
     </style>
   </head>
@@ -236,8 +253,8 @@
         console.log(slider.value);
 
         slider.oninput = function () {
-          // Update the page number display
           output.innerHTML = this.value * 2 - 1;
+          this.setAttribute("data-value", output.innerHTML);
 
           // Update the current image pair index
           currentImagePairIndex = this.value - 1;
