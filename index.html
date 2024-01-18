@@ -8,6 +8,19 @@
       rel="stylesheet"
     />
     <title>Quran</title>
+    <script>
+      // JavaScript to detect user-agent and redirect
+      function checkScreenWidth() {
+        if (window.innerWidth <= 1400) {
+          // If screen width is less than or equal to 600 pixels, redirect to mobile.html
+          window.location.href = "mobile.html";
+        }
+      }
+      checkScreenWidth();
+
+      // Add event listener for window resize
+      window.addEventListener("resize", checkScreenWidth);
+    </script>
     <style>
       html,
       body {
