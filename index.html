@@ -3,39 +3,58 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Image Slideshow</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Quran</title>
     <style>
       html,
       body {
-        height: 100%;
+        height: calc(100% - 200px); /* Subtract the total padding from 100% */
         width: 100%;
         margin: 0;
-        padding: 0;
-        overflow: hidden;
+        padding: 0px 10px; /* Add 10px of padding to the top and bottom */
       }
 
-      .image-container {
+      .image-container,
+      .slider-container {
         display: flex;
-        flex-direction: column;
-        align-items: center;
         justify-content: center;
+        align-items: center;
       }
 
       .image-pair {
         display: flex;
         align-items: center;
-        justify-content: space-evenly;
+        justify-content: center;
         margin: 0 auto; /* Center the container horizontally */
       }
-
+      p {
+        font-family: "Lato", sans-serif;
+      }
       img {
         max-width: 35vw; /* Set the maximum width of each image to 45% of the viewport width */
         height: auto;
-        margin: 10px; /* Optional: Add some margin between image pairs */
+        margin: 1px; /* Optional: Add some margin between image pairs */
       }
 
       button {
-        margin: 5px;
+        background-color: #4caf50; /* Green background */
+        border: none; /* Remove borders */
+        color: white; /* White text */
+        padding: 15px 32px; /* Some padding */
+        text-align: center; /* Centered text */
+        text-decoration: none; /* Remove underline */
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 1px;
+        cursor: pointer; /* Mouse pointer on hover */
+        transition-duration: 0.4s; /* Transition effects on hover */
+      }
+
+      button:hover {
+        background-color: #45a049;
       }
 
       input[type="number"] {
@@ -51,9 +70,54 @@
       .button-container input {
         margin-left: 20px; /* Add some space to the right of each button and input field */
       }
+      .slider {
+        -webkit-appearance: none; /* Override default CSS styles */
+        appearance: none;
+        width: 67%; /* Full-width */
+        height: 15px; /* Specified height */
+        background: #d3d3d3; /* Grey background */
+        outline: none; /* Remove outline */
+        opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+        -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+        transition: opacity 0.2s;
+        direction: rtl;
+        width: 67%;
+        direction: rtl;
+      }
+      .slider:hover {
+        opacity: 1; /* Fully shown on mouse-over */
+      }
+      .slider::-webkit-slider-thumb {
+        -webkit-appearance: none; /* Override default look */
+        appearance: none;
+        width: 25px; /* Set a specific slider handle width */
+        height: 25px; /* Slider handle height */
+        background: #4caf50; /* Green background */
+        cursor: pointer; /* Cursor on hover */
+      }
+      .slider::-moz-range-thumb {
+        width: 25px; /* Set a specific slider handle width */
+        height: 25px; /* Slider handle height */
+        background: #4caf50; /* Green background */
+        cursor: pointer; /* Cursor on hover */
+      }
     </style>
   </head>
   <body>
+    <div class="image-container">
+      <!-- Your images go here -->
+    </div>
+    <div class="slider-container">
+      <input
+        type="range"
+        min="1"
+        max="100"
+        value="1"
+        class="slider"
+        id="myRange"
+      />
+      <p>Page: <span id="demo"></span></p>
+    </div>
     <script>
       // Function to generate image filenames
       function generateImageFilenames() {
@@ -76,8 +140,10 @@
         var slideshowContainer = document.body;
 
         // Create a container for each pair of images
-        var imageContainer = document.createElement("div");
-        imageContainer.className = "image-container";
+        var imageContainer = document.querySelector(".image-container");
+        // Get the slider and output elements
+        var slider = document.getElementById("myRange");
+        var output = document.getElementById("demo");
 
         // Create a container for each pair of images
         var imagePairContainer = document.createElement("div");
@@ -106,20 +172,28 @@
         // Create navigation buttons
         var prevButton = document.createElement("button");
         prevButton.textContent = "Previous";
+        prevButton.innerHTML = "&larr;";
         prevButton.onclick = function () {
           if (currentImagePairIndex < imageFilenames.length - 1) {
+            slider.value = currentImagePairIndex + 1; // Update the slider value
+            output.innerHTML = slider.value * 2 - 1; // Update the page number display
             currentImagePairIndex++;
             updateImages();
+            updatePlaceholder();
           }
         };
         buttonContainer.appendChild(prevButton);
 
         var nextButton = document.createElement("button");
         nextButton.textContent = "Next";
+        nextButton.innerHTML = "&rarr;";
         nextButton.onclick = function () {
           if (currentImagePairIndex > 0) {
             currentImagePairIndex--;
+            slider.value = currentImagePairIndex + 1; // Update the slider value
+            output.innerHTML = slider.value * 2 - 1; // Update the page number display
             updateImages();
+            updatePlaceholder();
           }
         };
         buttonContainer.appendChild(nextButton);
@@ -151,6 +225,26 @@
         buttonContainer.appendChild(goButton);
 
         slideshowContainer.appendChild(buttonContainer);
+        // Update the slider max value based on the number of image pairs
+        slider.max = imageFilenames.length;
+
+        // Display the initial image pair
+        updateImages();
+
+        // Update the page number display
+        output.innerHTML = slider.value * 2 - 1;
+        console.log(slider.value);
+
+        slider.oninput = function () {
+          // Update the page number display
+          output.innerHTML = this.value * 2 - 1;
+
+          // Update the current image pair index
+          currentImagePairIndex = this.value - 1;
+
+          // Update the images
+          updateImages();
+        };
 
         // Add event listeners for arrow keys
         document.addEventListener("keydown", function (event) {
@@ -159,6 +253,8 @@
               event.preventDefault(); // Prevent the default scrolling behavior
               if (currentImagePairIndex < imageFilenames.length - 1) {
                 currentImagePairIndex++;
+                slider.value = currentImagePairIndex + 1; // Update the slider value
+                output.innerHTML = slider.value * 2 - 1; // Update the page number display
                 updateImages();
                 updatePlaceholder();
               }
@@ -167,6 +263,8 @@
               event.preventDefault(); // Prevent the default scrolling behavior
               if (currentImagePairIndex > 0) {
                 currentImagePairIndex--;
+                slider.value = currentImagePairIndex + 1; // Update the slider value
+                output.innerHTML = slider.value * 2 - 1; // Update the page number display
                 updateImages();
                 updatePlaceholder();
               }
@@ -184,6 +282,15 @@
 
         imgElement1.src = imageFilenames[currentImagePairIndex][1]; // Switched order
         imgElement2.src = imageFilenames[currentImagePairIndex][0];
+
+        // Update the value of the page input field
+        updatePageInputValue();
+      }
+
+      // Function to update the value of the page input field
+      function updatePageInputValue() {
+        var pageInput = document.querySelector("input[type='number']");
+        pageInput.value = currentImagePairIndex * 2 + 1;
       }
 
       // Function to update the placeholder value
