@@ -25,7 +25,6 @@
       sizes="16x16"
       href="/public/favicon-16x16.png"
     />
-    <link rel="manifest" href="/public/site.webmanifest" />
     <script>
       // JavaScript to detect user-agent and redirect
       function checkScreenWidth() {
@@ -164,7 +163,7 @@
         class="slider"
         id="myRange"
       />
-      <p>Page: <span id="demo"></span></p>
+      <p>Page: <span id="page-number"></span></p>
     </div>
     <script>
       // Function to generate image filenames
@@ -179,9 +178,22 @@
 
         return imageFilenames;
       }
+      // Function to save the current page index to localStorage
+      function saveCurrentPage() {
+        localStorage.setItem("currentPage", currentImagePairIndex);
+      }
+
+      // Function to retrieve the last saved page index from localStorage
+      function getLastPage() {
+        currentPage = localStorage.getItem("currentPage");
+        if (!currentPage) {
+          return;
+        }
+        return Number(currentPage);
+      }
 
       var imageFilenames = generateImageFilenames();
-      var currentImagePairIndex = 0;
+      var currentImagePairIndex = getLastPage() || 0;
 
       // Function to create the slideshow
       function createSlideshow() {
@@ -191,7 +203,6 @@
         var imageContainer = document.querySelector(".image-container");
         // Get the slider and output elements
         var slider = document.getElementById("myRange");
-        var output = document.getElementById("demo");
 
         // Create a container for each pair of images
         var imagePairContainer = document.createElement("div");
@@ -223,11 +234,8 @@
         prevButton.innerHTML = "&larr;";
         prevButton.onclick = function () {
           if (currentImagePairIndex < imageFilenames.length - 1) {
-            slider.value = currentImagePairIndex + 1; // Update the slider value
-            output.innerHTML = slider.value * 2 - 1; // Update the page number display
             currentImagePairIndex++;
             updateImages();
-            updatePlaceholder();
           }
         };
         buttonContainer.appendChild(prevButton);
@@ -238,10 +246,7 @@
         nextButton.onclick = function () {
           if (currentImagePairIndex > 0) {
             currentImagePairIndex--;
-            slider.value = currentImagePairIndex + 1; // Update the slider value
-            output.innerHTML = slider.value * 2 - 1; // Update the page number display
             updateImages();
-            updatePlaceholder();
           }
         };
         buttonContainer.appendChild(nextButton);
@@ -267,7 +272,6 @@
           if (!isNaN(page) && page >= 1 && page <= 604) {
             currentImagePairIndex = Math.floor((page - 1) / 2);
             updateImages();
-            updatePlaceholder();
           }
         };
         buttonContainer.appendChild(goButton);
@@ -280,12 +284,11 @@
         updateImages();
 
         // Update the page number display
-        output.innerHTML = slider.value * 2 - 1;
         console.log(slider.value);
 
         slider.oninput = function () {
-          output.innerHTML = this.value * 2 - 1;
-          this.setAttribute("data-value", output.innerHTML);
+          console.log("Slider on input" + this.value);
+          this.setAttribute("data-value", this.value);
 
           // Update the current image pair index
           currentImagePairIndex = this.value - 1;
@@ -301,20 +304,14 @@
               event.preventDefault(); // Prevent the default scrolling behavior
               if (currentImagePairIndex < imageFilenames.length - 1) {
                 currentImagePairIndex++;
-                slider.value = currentImagePairIndex + 1; // Update the slider value
-                output.innerHTML = slider.value * 2 - 1; // Update the page number display
                 updateImages();
-                updatePlaceholder();
               }
               break;
             case "ArrowRight":
               event.preventDefault(); // Prevent the default scrolling behavior
               if (currentImagePairIndex > 0) {
                 currentImagePairIndex--;
-                slider.value = currentImagePairIndex + 1; // Update the slider value
-                output.innerHTML = slider.value * 2 - 1; // Update the page number display
                 updateImages();
-                updatePlaceholder();
               }
               break;
           }
@@ -332,7 +329,11 @@
         imgElement2.src = imageFilenames[currentImagePairIndex][0];
 
         // Update the value of the page input field
+        updatePlaceholder();
         updatePageInputValue();
+        updateSlider();
+        updatePageNumber();
+        saveCurrentPage();
       }
 
       // Function to update the value of the page input field
@@ -341,10 +342,20 @@
         pageInput.value = currentImagePairIndex * 2 + 1;
       }
 
+      function updateSlider() {
+        var slider = document.querySelector("#myRange");
+        slider.value = currentImagePairIndex + 1;
+      }
+
       // Function to update the placeholder value
       function updatePlaceholder() {
         var pageInput = document.querySelector("input[type='number']");
         pageInput.placeholder = "Page " + (currentImagePairIndex * 2 + 1);
+      }
+
+      function updatePageNumber() {
+        var pageNumber = document.querySelector("#page-number");
+        pageNumber.innerHTML = currentImagePairIndex * 2 + 1;
       }
 
       // Call the function to create the slideshow when the page loads
