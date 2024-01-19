@@ -161,7 +161,7 @@
         max="100"
         value="1"
         class="slider"
-        id="myRange"
+        id="page-slider"
       />
       <p>Page: <span id="page-number"></span></p>
     </div>
@@ -202,7 +202,7 @@
         // Create a container for each pair of images
         var imageContainer = document.querySelector(".image-container");
         // Get the slider and output elements
-        var slider = document.getElementById("myRange");
+        var slider = document.getElementById("page-slider");
 
         // Create a container for each pair of images
         var imagePairContainer = document.createElement("div");
@@ -343,7 +343,7 @@
       }
 
       function updateSlider() {
-        var slider = document.querySelector("#myRange");
+        var slider = document.querySelector("#page-slider");
         slider.value = currentImagePairIndex + 1;
       }
 
