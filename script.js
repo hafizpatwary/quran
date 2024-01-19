@@ -1,4 +1,3 @@
-// Function to generate image filenames
 function generateImageFilenames() {
   var imageFilenames = [];
 
@@ -10,12 +9,11 @@ function generateImageFilenames() {
 
   return imageFilenames;
 }
-// Function to save the current page index to localStorage
+
 function saveCurrentPage() {
   localStorage.setItem("currentPage", currentImagePairIndex);
 }
 
-// Function to retrieve the last saved page index from localStorage
 function getLastPage() {
   currentPage = localStorage.getItem("currentPage");
   if (!currentPage) {
@@ -27,7 +25,6 @@ function getLastPage() {
 var imageFilenames = generateImageFilenames();
 var currentImagePairIndex = getLastPage() || 0;
 
-// Function to create the slideshow
 function createButton(text, html, onClick) {
   var button = document.createElement("button");
   button.textContent = text;
@@ -125,7 +122,6 @@ function createSlideshow() {
   });
 }
 
-// Function to update the displayed image pair
 function updateImages() {
   var imgElement1 = document.querySelector(".image-pair img:first-child");
   var imgElement2 = document.querySelector(".image-pair img:nth-child(2)");
@@ -133,7 +129,6 @@ function updateImages() {
   imgElement1.src = imageFilenames[currentImagePairIndex][1]; // Switched order
   imgElement2.src = imageFilenames[currentImagePairIndex][0];
 
-  // Update the value of the page input field
   updatePlaceholder();
   updatePageInputValue();
   updateSlider();
@@ -141,7 +136,6 @@ function updateImages() {
   saveCurrentPage();
 }
 
-// Function to update the value of the page input field
 function updatePageInputValue() {
   var pageInput = document.querySelector("input[type='number']");
   pageInput.value = currentImagePairIndex * 2 + 1;
@@ -152,7 +146,6 @@ function updateSlider() {
   slider.value = currentImagePairIndex + 1;
 }
 
-// Function to update the placeholder value
 function updatePlaceholder() {
   var pageInput = document.querySelector("input[type='number']");
   pageInput.placeholder = "Page " + (currentImagePairIndex * 2 + 1);
