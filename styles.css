@@ -1,0 +1,109 @@
+html,
+body {
+  height: calc(100% - 10px); /* Subtract the total padding from 100% */
+  width: 100%;
+  margin: 0;
+  padding: 0px 10px; /* Add 10px of padding to the top and bottom */
+}
+
+.image-container,
+.slider-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-pair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto; /* Center the container horizontally */
+}
+p {
+  font-family: "Lato", sans-serif;
+  color: #808080; /* Grey color */
+}
+
+p:hover {
+  color: #404040; /* Darker grey color on hover */
+}
+
+.slider:hover ~ p {
+  color: #404040; /* Darker grey color on hover */
+}
+img {
+  max-width: 35vw; /* Set the maximum width of each image to 45% of the viewport width */
+  height: auto;
+  margin: 1px; /* Optional: Add some margin between image pairs */
+}
+
+button {
+  background-color: #4caf50; /* Green background */
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 15px 32px; /* Some padding */
+  text-align: center; /* Centered text */
+  text-decoration: none; /* Remove underline */
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 1px;
+  cursor: pointer; /* Mouse pointer on hover */
+  transition-duration: 0.4s; /* Transition effects on hover */
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+input[type="number"] {
+  width: 50px;
+  margin: 5px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.button-container input {
+  margin-left: 20px; /* Add some space to the right of each button and input field */
+}
+.slider {
+  -webkit-appearance: none; /* Override default CSS styles */
+  appearance: none;
+  width: 67%; /* Full-width */
+  height: 15px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+  transition: opacity 0.2s;
+  direction: rtl;
+  width: 67%;
+  direction: rtl;
+}
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4caf50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+  position: relative;
+}
+
+.slider::-webkit-slider-thumb::before {
+  content: attr(data-value);
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #4caf50;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+}
