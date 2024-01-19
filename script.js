@@ -28,67 +28,59 @@ var imageFilenames = generateImageFilenames();
 var currentImagePairIndex = getLastPage() || 0;
 
 // Function to create the slideshow
+function createButton(text, html, onClick) {
+  var button = document.createElement("button");
+  button.textContent = text;
+  button.innerHTML = html;
+  button.onclick = onClick;
+  return button;
+}
+
+function createImage(src) {
+  var img = document.createElement("img");
+  img.src = src;
+  return img;
+}
+
 function createSlideshow() {
   var slideshowContainer = document.body;
-
-  // Create a container for each pair of images
   var imageContainer = document.querySelector(".image-container");
-  // Get the slider and output elements
   var slider = document.getElementById("page-slider");
 
-  // Create a container for each pair of images
   var imagePairContainer = document.createElement("div");
   imagePairContainer.className = "image-pair";
 
-  // Create two image elements for each pair
-  var imgElement1 = document.createElement("img");
-  var imgElement2 = document.createElement("img");
+  var imgElement1 = createImage(imageFilenames[currentImagePairIndex][1]);
+  var imgElement2 = createImage(imageFilenames[currentImagePairIndex][0]);
 
-  // Set the source for the images
-  imgElement1.src = imageFilenames[currentImagePairIndex][1]; // Switched order
-  imgElement2.src = imageFilenames[currentImagePairIndex][0];
-
-  // Append images to the container
-  imagePairContainer.appendChild(imgElement1);
-  imagePairContainer.appendChild(imgElement2);
-
-  // Append the image pair container to the image container
+  imagePairContainer.append(imgElement1, imgElement2);
   imageContainer.appendChild(imagePairContainer);
-
-  // Append the image container to the slideshow container
   slideshowContainer.appendChild(imageContainer);
 
   var buttonContainer = document.createElement("div");
   buttonContainer.className = "button-container";
-  // Create navigation buttons
-  var prevButton = document.createElement("button");
-  prevButton.textContent = "Previous";
-  prevButton.innerHTML = "&larr;";
-  prevButton.onclick = function () {
+
+  var prevButton = createButton("Previous", "&larr;", function () {
     if (currentImagePairIndex < imageFilenames.length - 1) {
       currentImagePairIndex++;
       updateImages();
     }
-  };
-  buttonContainer.appendChild(prevButton);
+  });
 
-  var nextButton = document.createElement("button");
-  nextButton.textContent = "Next";
-  nextButton.innerHTML = "&rarr;";
-  nextButton.onclick = function () {
+  var nextButton = createButton("Next", "&rarr;", function () {
     if (currentImagePairIndex > 0) {
       currentImagePairIndex--;
       updateImages();
     }
-  };
-  buttonContainer.appendChild(nextButton);
+  });
 
-  // Create input field for page number
+  buttonContainer.append(prevButton, nextButton);
+
   var pageInput = document.createElement("input");
   pageInput.type = "number";
   pageInput.min = 1;
   pageInput.max = 604;
-  pageInput.placeholder = "Page " + (currentImagePairIndex * 2 + 1); // Set initial placeholder
+  pageInput.placeholder = "Page " + (currentImagePairIndex * 2 + 1);
   pageInput.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
       goButton.click();
@@ -96,56 +88,39 @@ function createSlideshow() {
   });
   buttonContainer.appendChild(pageInput);
 
-  // Create "Go" button to navigate to the specified page
-  var goButton = document.createElement("button");
-  goButton.textContent = "Go";
-  goButton.onclick = function () {
+  var goButton = createButton("Go", "", function () {
     var page = parseInt(pageInput.value);
     if (!isNaN(page) && page >= 1 && page <= 604) {
       currentImagePairIndex = Math.floor((page - 1) / 2);
       updateImages();
     }
-  };
+  });
   buttonContainer.appendChild(goButton);
 
   slideshowContainer.appendChild(buttonContainer);
-  // Update the slider max value based on the number of image pairs
+
   slider.max = imageFilenames.length;
 
-  // Display the initial image pair
   updateImages();
 
-  // Update the page number display
-  console.log(slider.value);
-
   slider.oninput = function () {
-    console.log("Slider on input" + this.value);
     this.setAttribute("data-value", this.value);
-
-    // Update the current image pair index
     currentImagePairIndex = this.value - 1;
-
-    // Update the images
     updateImages();
   };
 
-  // Add event listeners for arrow keys
   document.addEventListener("keydown", function (event) {
-    switch (event.key) {
-      case "ArrowLeft":
-        event.preventDefault(); // Prevent the default scrolling behavior
-        if (currentImagePairIndex < imageFilenames.length - 1) {
-          currentImagePairIndex++;
-          updateImages();
-        }
-        break;
-      case "ArrowRight":
-        event.preventDefault(); // Prevent the default scrolling behavior
-        if (currentImagePairIndex > 0) {
-          currentImagePairIndex--;
-          updateImages();
-        }
-        break;
+    if (
+      event.key === "ArrowLeft" &&
+      currentImagePairIndex < imageFilenames.length - 1
+    ) {
+      event.preventDefault();
+      currentImagePairIndex++;
+      updateImages();
+    } else if (event.key === "ArrowRight" && currentImagePairIndex > 0) {
+      event.preventDefault();
+      currentImagePairIndex--;
+      updateImages();
     }
   });
 }
